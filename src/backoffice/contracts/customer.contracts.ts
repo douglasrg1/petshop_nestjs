@@ -1,6 +1,6 @@
 import { ModelContract } from "./model.contract";
 import { CustomerModel } from "../models/customer.model";
-import { Flunt } from "src/utils/flunt";
+import { Flunt } from "../../utils/flunt";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

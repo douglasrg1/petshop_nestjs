@@ -1,7 +1,7 @@
 import { Controller, Post, Put, Delete, Get, Param, Body, UseInterceptors } from "@nestjs/common";
 import { CustomerModel } from "../models/customer.model";
 import { ResultModel } from "../models/result.model";
-import { ValidatorInterceptor } from "src/interceptors/validator.interceptor";
+import { ValidatorInterceptor } from "../../interceptors/validator.interceptor";
 import { CustomerContract } from "../contracts/customer.contracts";
 
 @Controller('v1/customers')
@@ -15,7 +15,7 @@ export class CustomerController{
         return new ResultModel(null,true,null,null);
     }
     @Post()
-    //@UseInterceptors(new ValidatorInterceptor(new CustomerContract()))
+    @UseInterceptors(new ValidatorInterceptor(new CustomerContract()))
     post(@ Body() body: CustomerModel){
         return new ResultModel("cliente cadastrado com sucesso",true,body,null);
     }
