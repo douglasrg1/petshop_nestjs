@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ModelContract } from "../model.contract";
-import { Flunt } from "../../../utils/flunt";
-import { QueryDto } from "../../../backoffice/dtos/query.dto";
+import { Flunt } from "../../../../utils/flunt";
+import { QueryDto } from "../../dtos/query.dto";
 
 @Injectable()
 export class QueryContract implements ModelContract{

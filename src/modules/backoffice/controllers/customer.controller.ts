@@ -1,6 +1,6 @@
 import { Controller, Post, Put, Delete, Get, Param, Body, UseInterceptors, HttpException, HttpStatus } from "@nestjs/common";
 import { ResultModel } from "../models/result.model";
-import { ValidatorInterceptor } from "../../interceptors/validator.interceptor";
+import { ValidatorInterceptor } from "../../../interceptors/validator.interceptor";
 import { CustomerContract } from "../contracts/customer/create-customer.contract";
 import { CreateCustomerDto } from "../dtos/create-customer.dto";
 import { AccountService } from "../services/account.service";
@@ -13,12 +13,17 @@ import { CreatePetContract } from "../contracts/customer/create-pet.contract";
 import { PetModel } from "../models/pet.model";
 import { QueryDto } from "../dtos/query.dto";
 import { QueryContract } from "../contracts/customer/query.contract";
+import { AddressService } from "../services/address.service";
+import { AddressType } from "../enums/address-type";
+import { PetService } from "../services/pets.service";
 
 @Controller('v1/customers')
 export class CustomerController {
 
     constructor(private readonly accountService: AccountService,
-        private readonly customerService: CustomerService) { }
+        private readonly customerService: CustomerService,
+        private readonly addressService: AddressService,
+        private readonly petService: PetService) { }
 
     @Post()
     @UseInterceptors(new ValidatorInterceptor(new CustomerContract()))
@@ -39,7 +44,7 @@ export class CustomerController {
     @UseInterceptors(new ValidatorInterceptor(new CreateAddressContract()))
     async addBillingAddress(@Param('document') document, @Body() model: Addres) {
         try {
-            await this.customerService.addBillingAddress(document, model);
+            await this.addressService.addAddress(document, model,AddressType.Billing);
             return new ResultModel('documento adicionado com sucesso', true, model, null)
 
         } catch (error) {
@@ -51,7 +56,7 @@ export class CustomerController {
     @UseInterceptors(new ValidatorInterceptor(new CreateAddressContract()))
     async addShippingAddress(@Param('document') document, @Body() model: Addres) {
         try {
-            await this.customerService.addShippingAddress(document, model);
+            await this.addressService.addAddress(document, model,AddressType.Shipping);
             return new ResultModel('documento adicionado com sucesso', true, model, null)
 
         } catch (error) {
@@ -63,7 +68,7 @@ export class CustomerController {
     @UseInterceptors(new ValidatorInterceptor(new CreatePetContract()))
     async addPets(@Param('document') document, @Body() model: PetModel) {
         try {
-            await this.customerService.createPet(document, model);
+            await this.petService.createPet(document, model);
             return new ResultModel('Pet adicionado com sucesso', true, model, null)
 
         } catch (error) {
@@ -75,7 +80,7 @@ export class CustomerController {
     @UseInterceptors(new ValidatorInterceptor(new CreatePetContract()))
     async updatePets(@Param('document') document,@Param('id') id, @Body() model: PetModel) {
         try {
-            await this.customerService.updatePate(document,id, model);
+            await this.petService.updatePate(document,id, model);
             return new ResultModel('Pet atualizado com sucesso', true, model, null)
 
         } catch (error) {
