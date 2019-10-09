@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CustomerModel } from '../models/customer.model';
 import { Addres } from '../valueObjects/address.vo';
 import { PetModel } from '../models/pet.model';
+import { QueryDto } from '../dtos/query.dto';
 
 
 @Injectable()
@@ -20,47 +21,53 @@ export class CustomerService {
     async addBillingAddress(document: string, data: Addres): Promise<CustomerModel> {
         const options = { upsert: true };
         return await this.model.findOneAndUpdate({ document },
-            {  
-                $set:{
+            {
+                $set: {
                     billingAddress: data
                 }
 
-            },options);
+            }, options);
     }
     async addShippingAddress(document: string, data: Addres): Promise<CustomerModel> {
         const options = { upsert: true };
         return await this.model.findOneAndUpdate({ document },
-            {  
-                $set:{
+            {
+                $set: {
                     shippingAddress: data
                 }
 
-            },options);
+            }, options);
     }
     async createPet(document: string, data: PetModel): Promise<CustomerModel> {
         const options = { upsert: true, new: true };
         return await this.model.findOneAndUpdate({ document },
-            {  
-                $push:{
+            {
+                $push: {
                     pets: data
                 }
 
-            },options);
+            }, options);
     }
-    async updatePate(document: string,id: string, data: PetModel): Promise<CustomerModel> {
-        
-        return await this.model.findOneAndUpdate({ document,'pets._id': id },
-            {  
-                $set:{
+    async updatePate(document: string, id: string, data: PetModel): Promise<CustomerModel> {
+
+        return await this.model.findOneAndUpdate({ document, 'pets._id': id },
+            {
+                $set: {
                     'pets.$': data
                 }
 
             });
     }
-    async findAll():Promise<CustomerModel[]>{
-        return await this.model.find({},'name email document').sort('name').exec();
+    async findAll(): Promise<CustomerModel[]> {
+        return await this.model.find({}, 'name email document').sort('name').exec();
     }
-    async find(document: string):Promise<CustomerModel>{
-        return await this.model.find({document}).populate('user', 'username').exec();
+    async find(document: string): Promise<CustomerModel> {
+        return await this.model.find({ document }).populate('user', 'username').exec();
     }
+    //deixa a aplicação fazer uma query de preferencia para busca no banco.
+    async query(model: QueryDto): Promise<CustomerModel> {
+        return await this.model.find(model.query, model.field, { skip: model.skip, limit: model.take })
+            .sort(model.sort).exec();
+    }
+
 }

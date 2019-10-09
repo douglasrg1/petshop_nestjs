@@ -31,6 +31,14 @@ export class Flunt {
             this.errors.push(message);
         }
     }
+    isGreaterThan(value: number, fix: number, message: string){
+        if(value <= fix)
+            this.errors.push(message);
+    }
+    isLowerThan(value: number, fix: number, message: string){
+        if(value >= fix)
+            this.errors.push(message);
+    }
     isValid(){
         return this.errors.length === 0;
     }
