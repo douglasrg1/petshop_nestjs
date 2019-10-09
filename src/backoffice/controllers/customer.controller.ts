@@ -2,13 +2,15 @@ import { Controller, Post, Put, Delete, Get, Param, Body, UseInterceptors, HttpE
 import { ResultModel } from "../models/result.model";
 import { ValidatorInterceptor } from "../../interceptors/validator.interceptor";
 import { CustomerContract } from "../contracts/customer/create-customer.contract";
-import { CreateCustomerDto } from "../dtos/create-customer-dto";
+import { CreateCustomerDto } from "../dtos/create-customer.dto";
 import { AccountService } from "../services/account.service";
 import { User } from "../models/user";
 import { CustomerService } from "../services/customer.service";
 import { CustomerModel } from "../models/customer.model";
 import { Addres } from "../valueObjects/address.vo";
 import { CreateAddressContract } from "../contracts/customer/create-address.contract";
+import { CreatePetContract } from "../contracts/customer/create-pet.contract";
+import { PetModel } from "../models/pet.model";
 
 @Controller('v1/customers')
 export class CustomerController {
@@ -16,14 +18,6 @@ export class CustomerController {
     constructor(private readonly accountService: AccountService,
         private readonly customerService: CustomerService) { }
 
-    @Get()
-    get() {
-        return new ResultModel(null, true, null, null);
-    }
-    @Get(':document')
-    getById(@Param('document') documento: string) {
-        return new ResultModel(null, true, null, null);
-    }
     @Post()
     @UseInterceptors(new ValidatorInterceptor(new CustomerContract()))
     async post(@Body() model: CreateCustomerDto) {
@@ -43,20 +37,57 @@ export class CustomerController {
     @UseInterceptors(new ValidatorInterceptor(new CreateAddressContract()))
     async addBillingAddress(@Param('document') document, @Body() model: Addres) {
         try {
-            this.customerService.addBillingAddress(document, model);
-            return model;
+            await this.customerService.addBillingAddress(document, model);
+            return new ResultModel('documento adicionado com sucesso', true, model, null)
 
         } catch (error) {
             throw new HttpException(new ResultModel('Não foi possivel adicionar seu endereço', false, null,
                 error), HttpStatus.BAD_REQUEST)
         }
     }
-    @Put(':document')
-    put(@Param('document') documento: string, @Body() body: CreateCustomerDto) {
-        return new ResultModel('cliente alterado com sucesso', true, body, null)
+    @Post(':document/addresses/shipping')
+    @UseInterceptors(new ValidatorInterceptor(new CreateAddressContract()))
+    async addShippingAddress(@Param('document') document, @Body() model: Addres) {
+        try {
+            await this.customerService.addShippingAddress(document, model);
+            return new ResultModel('documento adicionado com sucesso', true, model, null)
+
+        } catch (error) {
+            throw new HttpException(new ResultModel('Não foi possivel adicionar seu endereço', false, null,
+                error), HttpStatus.BAD_REQUEST)
+        }
     }
-    @Delete(':document')
-    delete(@Param('document') documento: string) {
-        return new ResultModel(`cliente ${documento} removido com sucesso`, true, null, null);
+    @Post(':document/pets')
+    @UseInterceptors(new ValidatorInterceptor(new CreatePetContract()))
+    async addPets(@Param('document') document, @Body() model: PetModel) {
+        try {
+            await this.customerService.createPet(document, model);
+            return new ResultModel('Pet adicionado com sucesso', true, model, null)
+
+        } catch (error) {
+            throw new HttpException(new ResultModel('Não foi possivel adicionar seu pet', false, null,
+                error), HttpStatus.BAD_REQUEST)
+        }
     }
+    @Put(':document/pets/:id')
+    @UseInterceptors(new ValidatorInterceptor(new CreatePetContract()))
+    async updatePets(@Param('document') document,@Param('id') id, @Body() model: PetModel) {
+        try {
+            await this.customerService.updatePate(document,id, model);
+            return new ResultModel('Pet atualizado com sucesso', true, model, null)
+
+        } catch (error) {
+            throw new HttpException(new ResultModel('Não foi possivel adicionar seu pet', false, null,
+                error), HttpStatus.BAD_REQUEST)
+        }
+    }
+    @Get()
+    async getAll(){
+        return new ResultModel(null,true,await this.customerService.findAll(),null);
+    }
+    @Get(':document')
+    async get(@Param('document') document: string){
+        return new ResultModel(null,true,await this.customerService.find(document),null);
+    }
+
 }
