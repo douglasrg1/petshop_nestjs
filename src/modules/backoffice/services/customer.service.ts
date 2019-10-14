@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomerModel } from '../models/customer.model';
 import { QueryDto } from '../dtos/query.dto';
+import { UpdateCustomerDto } from '../dtos/customer/update-customer.dto';
 
 
 @Injectable()
@@ -14,6 +15,9 @@ export class CustomerService {
     async create(data: CustomerModel): Promise<CustomerModel> {
         const user = new this.model(data);
         return await user.save();
+    }
+    async update(document: string, data: UpdateCustomerDto): Promise<CustomerModel> {
+        return await this.model.findOneAndUpdate({document}, data);
     }
     async findAll(): Promise<CustomerModel[]> {
         return await this.model.find({}, 'name email document').sort('name').exec();

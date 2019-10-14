@@ -1,15 +1,16 @@
-import { Controller, Post, Get, Param, Body, UseInterceptors, HttpException, HttpStatus } from "@nestjs/common";
+import { Controller, Post, Get, Param, Body, UseInterceptors, HttpException, HttpStatus, Put } from "@nestjs/common";
 import { ResultModel } from "../models/result.model";
 import { ValidatorInterceptor } from "../../../interceptors/validator.interceptor";
 import { CustomerContract } from "../contracts/customer/create-customer.contract";
-import { CreateCustomerDto } from "../dtos/create-customer.dto";
+import { CreateCustomerDto } from "../dtos/customer/create-customer.dto";
 import { AccountService } from "../services/account.service";
 import { User } from "../models/user";
 import { CustomerService } from "../services/customer.service";
 import { CustomerModel } from "../models/customer.model";
 import { QueryDto } from "../dtos/query.dto";
 import { QueryContract } from "../contracts/customer/query.contract";
-import { PetService } from "../services/pets.service";
+import { UpdateCustomerContract } from "../contracts/customer/update-customer.contract";
+import { UpdateCustomerDto } from "../dtos/customer/update-customer.dto";
 
 @Controller('v1/customers')
 export class CustomerController {
@@ -27,6 +28,17 @@ export class CustomerController {
             );
 
             return new ResultModel('cliente criado com sucesso', true, customer, null)
+        } catch (error) {
+            throw new HttpException(new ResultModel('erro ao salvar usuario', false, null, error),
+                HttpStatus.BAD_REQUEST)
+        }
+    }
+    @Put(":document")
+    @UseInterceptors(new ValidatorInterceptor(new UpdateCustomerContract()))
+    async Put(@Param(":document") document,@Body() model: UpdateCustomerDto) {
+        try {
+            await this.customerService.update(document,model);
+            return new ResultModel('cliente atualizado com sucesso', true, model, null)
         } catch (error) {
             throw new HttpException(new ResultModel('erro ao salvar usuario', false, null, error),
                 HttpStatus.BAD_REQUEST)
