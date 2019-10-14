@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CustomerModel } from '../models/customer.model';
 import { QueryDto } from '../dtos/query.dto';
 import { UpdateCustomerDto } from '../dtos/customer/update-customer.dto';
+import { CreditCard } from '../valueObjects/creditCard.vo';
 
 
 @Injectable()
@@ -24,6 +25,15 @@ export class CustomerService {
     }
     async find(document: string): Promise<CustomerModel> {
         return await this.model.find({ document }).populate('user', 'username').exec();
+    }
+    async saveOrUpdateCreditCard(document: string,data: CreditCard): Promise<CustomerModel> {
+        const options = {upsert: true};
+
+        return await this.model.findOneAndUpdate({document},{
+            $set: {
+                card: data
+            }
+        },options);
     }
     //deixa a aplicação fazer uma query de preferencia para busca no banco.
     async query(model: QueryDto): Promise<CustomerModel> {

@@ -10,6 +10,9 @@ export class QueryContract implements ModelContract{
         
         const flunt = new Flunt();
 
+        if(!model.query)
+            model.query = {};
+            
         flunt.isLowerThan(model.take,500,"O número de registros na busca excede o maximo de 500 registros por requisição");
 
         this.errors = flunt.errors;

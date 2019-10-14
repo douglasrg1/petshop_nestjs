@@ -11,6 +11,8 @@ import { QueryDto } from "../dtos/query.dto";
 import { QueryContract } from "../contracts/customer/query.contract";
 import { UpdateCustomerContract } from "../contracts/customer/update-customer.contract";
 import { UpdateCustomerDto } from "../dtos/customer/update-customer.dto";
+import { CreditCardContract } from "../contracts/customer/create-credit-card.contract";
+import { CreditCard } from "../valueObjects/creditCard.vo";
 
 @Controller('v1/customers')
 export class CustomerController {
@@ -57,6 +59,18 @@ export class CustomerController {
     async query(@Body() model: QueryDto){
         const customer = await this.customerService.query(model);
         return new ResultModel(null,true,customer,null);
+    }
+    @Post(':document/credit-cards')
+    @UseInterceptors(new ValidatorInterceptor(new CreditCardContract()))
+    async createCreditCard(@Param(":document") document,@Body() model: CreditCard){
+        try {
+            await this.customerService.saveOrUpdateCreditCard(document,model);
+            return new ResultModel("Cartão adicionado com sucesso",true,model,null);
+            
+        } catch (error) {
+            throw new HttpException(new ResultModel("Falha ao adicionar o cartão de crédito",false,null,error),
+            HttpStatus.BAD_REQUEST);
+        }
     }
 
 
