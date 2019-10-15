@@ -10,4 +10,8 @@ export class Product{
     title: string;
     @Column('text')
     description: string;
+    @Column('decimal')
+    price: number;
+    @Column('decimal')
+    quantityOnHand: number;
 }
