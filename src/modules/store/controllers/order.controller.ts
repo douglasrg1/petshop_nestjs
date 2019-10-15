@@ -2,7 +2,7 @@ import { Controller, Get, Param, HttpException, HttpStatus, Post, Body } from "@
 import { OrderService } from "../services/order.service";
 import { OrderItemService } from "../services/order-item.service";
 import { ProductService } from "../services/product.service";
-import { ResultModel } from "src/modules/backoffice/models/result.model";
+import { ResultModel } from "../../../modules/backoffice/models/result.model";
 import { Order } from "../entities/order.entity";
 import { OrderItemDto } from "../dtos/Order-item.dto";
 import { OrderItem } from "../entities/order-item.entity";
