@@ -40,7 +40,7 @@ export class OrderController{
             let order = new Order();
             order.customer = "123123123";
             order.date = new Date();
-            order.number = "asdf234234";
+            order.number = "asdf2342";
             order.items = [];
             await this.orderService.post(order);
 
@@ -52,11 +52,12 @@ export class OrderController{
                 orderItem.price = product.price;
                 orderItem.quantity = item.quantity;
                 await this.orderItemService.post(orderItem);
-                return new ResultModel(null,true,model,null);
             }
 
+            return new ResultModel(null,true,model,null);
+
         } catch (error) {
-            throw new HttpException( new ResultModel("Erro ao listar os pedidos",false,null,error),
+            throw new HttpException( new ResultModel("Erro ao adicionar os pedidos",false,null,error),
             HttpStatus.BAD_REQUEST);
         }
     }
