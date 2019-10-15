@@ -17,4 +17,7 @@ export class ProductService{
     async put(id: number, product: Product){
         await this.repository.update(id,product);
     }
+    async delete(id:number){
+        await this.repository.delete(id);
+    }
 }
