@@ -14,4 +14,7 @@ export class AccountService{
         const user = new this.model(data);
         return await user.save();
     }
+    async findByUserName(username: string){
+        return new User(username,"123123123",true);
+    }
 }
