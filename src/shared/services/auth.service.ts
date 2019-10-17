@@ -8,15 +8,14 @@ import { JwtPayLoad } from "../interfaces/jwt-payload.interface";
 export class AuthService{
     constructor(private readonly accountService: AccountService,private readonly jwtService: JwtService){}
 
-    async createToken(){
+    async createToken(document:string,email:string,image:string,roles:string[]){
         const user: JwtPayLoad = {
-            document: '123123',
-            email: 'teste',
-            image: 'teste.png',
-            roles: ['admin']
+            document: document,
+            email: email,
+            image: image,
+            roles: roles
         };
-        const accessToken = this.jwtService.sign(user);
-        return {expiresIn: 3600, accessToken,};
+        return this.jwtService.sign(user);
 
     }
     async validateUser(payload: JwtPayLoad): Promise<any>{
