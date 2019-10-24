@@ -29,6 +29,7 @@
     "@nestjs/typeorm": "^6.2.0",
     "dotenv": "^8.2.0",
     "guid-typescript": "^1.0.9",
+    "md5-typescript": "^1.0.5",
     "mongoose": "^5.7.3",
     "mysql": "^2.17.1",
     "passport": "^0.4.0",
