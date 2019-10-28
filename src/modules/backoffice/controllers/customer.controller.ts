@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Param, Body, UseInterceptors, HttpException, HttpStatus, Put } from "@nestjs/common";
 import { ResultModel } from "../models/result.model";
+import {Md5} from 'md5-typescript';
 import { ValidatorInterceptor } from "../../../interceptors/validator.interceptor";
 import { CustomerContract } from "../contracts/customer/create-customer.contract";
 import { CreateCustomerDto } from "../dtos/customer/create-customer.dto";
@@ -13,18 +14,21 @@ import { UpdateCustomerContract } from "../contracts/customer/update-customer.co
 import { UpdateCustomerDto } from "../dtos/customer/update-customer.dto";
 import { CreditCardContract } from "../contracts/customer/create-credit-card.contract";
 import { CreditCard } from "../valueObjects/creditCard.vo";
+import { ConfigService } from "../../../modules/config/services/config.service";
 
 @Controller('v1/customers')
 export class CustomerController {
 
     constructor(private readonly accountService: AccountService,
-        private readonly customerService: CustomerService) { }
+        private readonly customerService: CustomerService,
+        private readonly config: ConfigService) { }
 
     @Post()
     @UseInterceptors(new ValidatorInterceptor(new CustomerContract()))
     async post(@Body() model: CreateCustomerDto) {
         try {
-            const user = await this.accountService.create(new User(model.document, model.password, true,['user']));
+            const pass = Md5.init(`${model.password}${this.config.get("HASH_KEY")}`);
+            const user = await this.accountService.create(new User(model.document, pass, true,['user']));
             const customer = await this.customerService.create(
                 new CustomerModel(model.name, model.document, model.email, null, null, null, null, user)
             );

@@ -14,9 +14,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from '../../shared/services/auth.service';
 import { JwtStrategy } from '../../shared/strategies/jwt.strategy';
 import { AccountController } from './controllers/account.controller';
+import { ConfigModule } from '../config/config.module';
 
 @Module({
     imports: [
+        ConfigModule,
         PassportModule.register({defaultStrategy: 'jwt'}),
         JwtModule.register({
             secretOrPrivateKey: '54147f5ce0d2',
