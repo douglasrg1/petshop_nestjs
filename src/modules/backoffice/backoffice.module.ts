@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { CustomerController } from './controllers/customer.controller';
 import { MongooseModule } from '@nestjs/mongoose'
 import { CustomerSchema } from '../../schemas/customer.schema';
@@ -18,6 +18,7 @@ import { ConfigModule } from '../config/config.module';
 
 @Module({
     imports: [
+        CacheModule.register(),
         ConfigModule,
         PassportModule.register({defaultStrategy: 'jwt'}),
         JwtModule.register({

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body, UseInterceptors, HttpException, HttpStatus, Put } from "@nestjs/common";
+import { Controller, Post, Get, Param, Body, UseInterceptors, HttpException, HttpStatus, Put, CacheInterceptor } from "@nestjs/common";
 import { ResultModel } from "../models/result.model";
 import {Md5} from 'md5-typescript';
 import { ValidatorInterceptor } from "../../../interceptors/validator.interceptor";
@@ -51,6 +51,7 @@ export class CustomerController {
         }
     }
     @Get()
+    @UseInterceptors(CacheInterceptor)
     async getAll(){
         return new ResultModel(null,true,await this.customerService.findAll(),null);
     }
