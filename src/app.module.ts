@@ -12,7 +12,7 @@ const service = new ConfigService(`${process.env.NODE_ENV || './development'}.en
     BackofficeModule,
     ConfigModule,
     StoreModule,
-    MongooseModule.forRoot(service.get('DATABASE_CONNECTION')),
+    MongooseModule.forRoot(service.get('DATABASE_CONNECTION'),{ useNewUrlParser: true, useUnifiedTopology: true,useCreateIndex: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: '127.0.0.1',
