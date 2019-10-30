@@ -5,6 +5,7 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import { StoreModule } from './modules/store/store.module';
 import { ConfigModule } from './modules/config/config.module';
 import { ConfigService } from './modules/config/services/config.service';
+import { AgendaModule } from './modules/agenda/agenda.module';
 const service = new ConfigService(`${process.env.NODE_ENV || './development'}.env`);
 
 @Module({
@@ -22,7 +23,8 @@ const service = new ConfigService(`${process.env.NODE_ENV || './development'}.en
       database: '7180',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true
-    })
+    }),
+    AgendaModule
   ],
   controllers: [],
   providers: [],
