@@ -3,8 +3,11 @@ import { Room } from "../models/room.model";
 
 @Injectable()
 export class RoomRepository {
-    async findOneById(id: string): Promise<Room> {
-        console.log('recuperando sala');
-        return new Room('12314');
+    async checkAvailability(id: string, date: Date): Promise<Room>{
+            //todo: ler do banco
+            return new Room('123123');
+    }
+    async book(room: Room){
+         //TODO: salvar no banco
     }
 }

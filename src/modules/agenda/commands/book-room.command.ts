@@ -2,6 +2,6 @@ export class BookRoomCommand {
     constructor(
         public readonly customerId: string,
         public readonly roomId: string,
-        private readonly date: Date
+        public readonly date: Date
     ) { };
 }
